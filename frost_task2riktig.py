@@ -52,8 +52,6 @@ precipitation_df = precipitation_df.rename(
 )
 precipitation_df['date'] = pd.to_datetime(precipitation_df['date'])
 
-#print(precipitation_df.head())
-
 # make plot with temperature from task 1
 x = precipitation_df['date']
 y = precipitation_df['precipitation']
@@ -61,5 +59,4 @@ y = precipitation_df['precipitation']
 plt.plot(x, y)
 xlabel = 'Date'
 ylabel = 'precipitation'
-
 plt.show()
