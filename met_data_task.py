@@ -92,3 +92,17 @@ def temperature_summary(df: pd.DataFrame) -> pd.DataFrame:
 summary = temperature_summary(temperature_df)
 
 print(summary)
+
+
+
+
+# lager plot
+x = temperature_df['date']
+y = temperature_df['temperature']
+
+plt.plot(x, y)
+plt.xlabel = 'Date'
+plt-ylabel = 'Temperature (°C)'
+plt.show()
+
+
