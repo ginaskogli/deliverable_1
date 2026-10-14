@@ -2,7 +2,7 @@
 
 import requests
 import pandas as pd
-#import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 
 with open('met_id.txt') as f:
     client_id = f'{f.readline().strip().split(':')[1]}'
@@ -102,7 +102,7 @@ y = temperature_df['temperature']
 
 plt.plot(x, y)
 plt.xlabel = 'Date'
-plt-ylabel = 'Temperature (°C)'
+plt.ylabel = 'Temperature (°C)'
 plt.show()
 
 
