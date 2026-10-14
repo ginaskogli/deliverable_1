@@ -193,3 +193,34 @@ for start_date, end_date in heatwaves:
     )
 
     print(temperature_df.loc[mask])
+
+
+def summarize_heatwaves(
+    heatwaves: list[tuple[str, str]],
+    station_id: str,
+    station_name: str,
+    year: int,
+) -> dict:
+    """Create a summary of heatwaves for a station and year.
+
+    Arguments:
+        heatwaves: List of start and end dates for each heatwave.
+        station_id: ID fo the weather station.
+        station_name: Name of the weather station.
+        year: Year for which heatwaves are summarized.
+
+    Returns:
+        A dictionary containing the heatwave dates, station ID,
+        station name, and year.
+    """
+    # Formatting the dates from tuples to strings, in new list
+    formatted_dates = [f"{start_date} - {end_date}" for start_date, end_date in heatwaves]
+
+    summary = {
+        "dates": formatted_dates,
+        "station_id": station_id,
+        "station_name": station_name,
+        "year": year,
+    }
+
+    return summary
