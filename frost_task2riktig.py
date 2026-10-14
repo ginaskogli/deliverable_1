@@ -1,7 +1,10 @@
+
 import requests
 import pandas as pd
 import matplotlib.pyplot as plt
 import json
+
+
 
 def get_frost_data(desired_element):
 
@@ -17,14 +20,13 @@ def get_frost_data(desired_element):
             'timeoffsets': 'default',
             'levels': 'default',
             }
-        # må sette sluttdato til 26-01-01 fordi de bruker åpne intervaller og dermed ikke inkluderer siste dato
+        # set end date to 26-01-01 because they use open intervals, dont include last date
     
         # Issue an HTTP GET request, r is in JSON format
         r = requests.get(endpoint, parameters, auth=(client_id,''))
         # Extract JSON data, make this a Python dictionary
         data = r.json()
         #print(json.dumps(data, indent=4))
-    
     
         # Check if the request worked, print out any errors
         if r.status_code == 200:
@@ -35,9 +37,8 @@ def get_frost_data(desired_element):
             print('Message: %s' % data['error']['message'])
             print('Reason: %s' % data['error']['reason'])
     
-    
         # not all elements in data has observations, need to check for that before creating the dataframe
-        # creates dataframe with observations (value, moh, unit etc), referenceTime and sourceId
+        # creates dataframe with observations (value, moh, unit MM.), referenceTime and sourceId
         for item in data:
             if 'observations' in item:
                 dataframe = pd.json_normalize(data, record_path='observations', meta=['referenceTime', 'sourceId'],)
@@ -57,7 +58,6 @@ def get_temperature_data(df):
             'value': 'temperature',
         }
     )
-
     temperature_df['date'] = pd.to_datetime(temperature_df['date'])
     temperature_df['temperature'] = pd.to_numeric(temperature_df['temperature'])
 
@@ -81,8 +81,12 @@ def get_precipitation_data(df):
     return precipitation_df
 
 
+
+# gather dataframes for temperature and precepitation in simpler names
 temp = get_temperature_data(get_frost_data('mean(air_temperature P1D)'))
 prec = get_precipitation_data(get_frost_data('sum(precipitation_amount P1D)'))
+
+
 
 
 # MAKE PLOT WITH TEMPERATURE FROM TASK 1 + PRECIPITATION
@@ -100,3 +104,5 @@ ax2.set_xlabel('Date')
 ax2.set_ylabel('Precipitation mm')
 
 plt.show()
+
+
