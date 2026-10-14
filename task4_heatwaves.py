@@ -224,3 +224,34 @@ def summarize_heatwaves(
     }
 
     return summary
+
+# Runn with formatted dates
+summary = summarize_heatwaves(
+    heatwaves=heatwaves,
+    station_id="SN17850",
+    station_name="Ås",
+    year=2025,
+)
+
+print(summary)
+
+
+def write_heatwaves_to_yaml(summary: dict, filename: str) -> None:
+    """Write a heatwave summary to a YAML file.
+
+    Arguments:
+        summary: Dictionary containing the heatwave summary.
+        filename: Name of the YAML file to write.
+
+    Returns:
+        None.
+    """
+    with open(filename, "w", encoding="utf-8") as file:
+        # encoding=utf-8, sørger for at tekst inkludert Å blir håndtert riktig
+        # as file - navn så vi kan skrive fil
+        yaml.dump(summary, file, allow_unicode=True, sort_keys=False)
+        # allow_unicode=True - tillater bokstaver som Å kan skrives i filen
+        # sort_keys=False gjør at nøkler beholdes i samme rekkefølge som i dict
+
+# Kall funksjonen og lag filnavn
+write_heatwaves_to_yaml(summary=summary, filename="heatwave_summary.yml")
