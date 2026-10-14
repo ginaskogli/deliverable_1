@@ -92,6 +92,13 @@ summary = temperature_summary(temperature_df)
 
 print(summary)
 
+def moving_average_temperature(df: pd.DataFrame) -> pd.Series:
+    """Calculating the 7-day moving averge of daily temperatures."""
+    moving_average = df['temperature'].rolling(window=7).mean()
+# series - returns a pandas-series with averagevalues
+# rolling(window=7) - collects 7 days at a time as a "window"
+
+    return moving_average
 
 
 
@@ -100,8 +107,8 @@ x = temperature_df['date']
 y = temperature_df['temperature']
 
 plt.plot(x, y)
-plt.xlabel = 'Date'
-plt.ylabel = 'Temperature (°C)'
+plt.xlabel('Date')
+plt.ylabel('Temperature (°C)')
 plt.show()
 
 
