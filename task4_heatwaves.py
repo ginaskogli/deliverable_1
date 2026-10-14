@@ -1,7 +1,3 @@
-# 1 henter maksimaltemperatur for valgt stasjon og år fra Frost - get_max_temperature
-# 2 teller hetebølger basert på temperaturdataene - count_heatwaves()
-# 3 skriver resultatet til en YAML-fil - write_heatwave_summary()
-
 import pandas as pd
 import requests
 import yaml 
@@ -11,11 +7,11 @@ def get_max_temperature(
     station_id: str,
     year: int,
 ) -> pd.DataFrame:
-    """Retrive daily maximum temperatures for a station and year.
+    """Retrieve daily maximum temperatures for a station and year.
 
     Arguments:
         station_id: Frost station ID.
-        year: Yer for which to retrive temperatures.
+        year: Year for which to retrive temperatures.
 
     Returns:
         DataFrame containing dates and daily maximum temperatures.
@@ -37,7 +33,7 @@ def get_max_temperature(
     # Issue an HTTP GET request
     response = requests.get(
         endpoint,
-        parameters, 
+        params=parameters, 
         auth=(client_id,''),
         timeout=30,
         )
@@ -66,8 +62,6 @@ def get_max_temperature(
             }
         )
 
-        print(temperature_df.columns)
-
         # konverterer dato til datetime for at det skal kunne leses
         temperature_df['date'] = pd.to_datetime(
             temperature_df['date']
@@ -85,15 +79,9 @@ def get_max_temperature(
             f"{response.status_code}: {response.text}"
         )
 
-# Calling the function - here we put in the station id and year, so it works for different stations
-temperature_df = get_max_temperature(
-    station_id="SN17850",
-    year=2025,
-)
-
 
 # Heatwave deffined as 5 consecutive days with T_max>=27*C
-def find_heatwaves(df: pd.DataFrame) -> list[str, str]:
+def find_heatwaves(df: pd.DataFrame) -> list[tuple[str, str]]:
     """Find heatwaves, defined as five or more consecutive days,
     with temperatures of 27 degrees or more.
 
@@ -110,7 +98,7 @@ def find_heatwaves(df: pd.DataFrame) -> list[str, str]:
     heatwaves = []  # List that will collect start/end dates for heatwaves
     start_date = None   # We dont know when a heatwave wil start, so therefore None, will contain timestamps later,
         # None er en pythonverdi som betyr at vi ikke har en verdi her enda, enda ikke registrert en varm periode i starten
-    consecutive_days = 0    #Når det er registrert en varm dag øker den med en
+    consecutive_days = 0    # Når det er registrert en varm dag øker den med en
 
     for index, is_hot in enumerate(hot_days):
         # index - plassering til dagen i dataframe
@@ -152,49 +140,6 @@ def find_heatwaves(df: pd.DataFrame) -> list[str, str]:
     return heatwaves
 
 
-# Testing med laget lite datasett
-# skal fungere - hetebølge
-test_df_hw = pd.DataFrame({
-    "date": pd.date_range("2025-07-01", periods=5),
-    "temperature": [28, 29, 30, 28, 27]
-})
-
-print("test_hw:", find_heatwaves(test_df_hw))
-
-# skal ikke fungere - periode for kort
-test_df_short = pd.DataFrame({
-    "date": pd.date_range("2025-07-01", periods=5),
-    "temperature": [28, 29, 30, 28, 24],
-})
-
-print("test_short:", find_heatwaves(test_df_short))
-
-# skal fungere - hetebølge fortsetter til siste dag av datasett
-# Tester hetebølge som fortsetter til siste dag
-test_df_new_year = pd.DataFrame({
-    "date": pd.date_range("2025-12-27", periods=6),
-    "temperature": [24, 28, 29, 30, 28, 27],
-})
-
-print("test_new_year:", find_heatwaves(test_df_new_year))
-
-# Finding heatwaves form the datasett
-heatwaves = find_heatwaves(temperature_df)
-
-print("MET data:", heatwaves)
-
-# kontroll av temperaturmålinger for registrerte hetebølger
-for start_date, end_date in heatwaves:
-    print(f"Heatwave: {start_date} to {end_date}")
-
-    mask = (
-        (temperature_df['date'] >= start_date)
-        & (temperature_df['date'] <= end_date)
-    )
-
-    print(temperature_df.loc[mask])
-
-
 def summarize_heatwaves(
     heatwaves: list[tuple[str, str]],
     station_id: str,
@@ -225,16 +170,6 @@ def summarize_heatwaves(
 
     return summary
 
-# Runn with formatted dates
-summary = summarize_heatwaves(
-    heatwaves=heatwaves,
-    station_id="SN17850",
-    station_name="Ås",
-    year=2025,
-)
-
-print(summary)
-
 
 def write_heatwaves_to_yaml(summary: dict, filename: str) -> None:
     """Write a heatwave summary to a YAML file.
@@ -252,6 +187,24 @@ def write_heatwaves_to_yaml(summary: dict, filename: str) -> None:
         yaml.dump(summary, file, allow_unicode=True, sort_keys=False)
         # allow_unicode=True - tillater bokstaver som Å kan skrives i filen
         # sort_keys=False gjør at nøkler beholdes i samme rekkefølge som i dict
+
+
+# Calling the function - here we put in the station id and year, so it works for different stations
+temperature_df = get_max_temperature(
+    station_id="SN17850",
+    year=2025,
+)
+
+# Finding heatwaves form the datasett
+heatwaves = find_heatwaves(temperature_df)
+
+# Runn with formatted dates
+summary = summarize_heatwaves(
+    heatwaves=heatwaves,
+    station_id="SN17850",
+    station_name="Ås",
+    year=2025,
+)
 
 # Kall funksjonen og lag filnavn
 write_heatwaves_to_yaml(summary=summary, filename="heatwave_summary.yml")
