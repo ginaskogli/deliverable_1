@@ -1,8 +1,6 @@
-
-
-import requests
-import pandas as pd
 import matplotlib.pyplot as plt
+import pandas as pd
+import requests
 
 with open('met_id.txt') as f:
     client_id = f'{f.readline().strip().split(':')[1]}'
@@ -19,7 +17,7 @@ parameters = {
 # må sette sluttdato til 26-01-01 fordi de bruker åpne intervaller og dermed ikke inkluderer siste dato
 
 # Issue an HTTP GET request
-r = requests.get(endpoint, parameters, auth=(client_id,''))
+r = requests.get(endpoint, parameters, auth=(client_id, ''))
 # Extract JSON data
 data = r.json()
 
@@ -28,9 +26,9 @@ if r.status_code == 200:
     data = data['data']
     print('Data retrieved from frost.met.no!')
 else:
-    print('Error! Returned status code %s' % r.status_code)
-    print('Message: %s' % data['error']['message'])
-    print('Reason: %s' % data['error']['reason'])
+    print(f'Error! Returned status code {r.status_code}')
+    print(f'Message: {data['error']['message']}')
+    print(f'Reason: {data['error']['reason']}')
 
 # This will return a Dataframe with all of the observations in a table format
 # Convert the observations to a DataFrame
@@ -70,6 +68,7 @@ print(temperature_df.shape)
 print(temperature_df['date'].min())
 print(temperature_df['date'].max())
 
+
 def temperature_summary(df: pd.DataFrame) -> pd.DataFrame:
     """Calculate summary statistics for the temperature data.
 
@@ -89,12 +88,10 @@ def temperature_summary(df: pd.DataFrame) -> pd.DataFrame:
 
     return summary
 
+
 summary = temperature_summary(temperature_df)
 
 print(summary)
-
-
-
 
 # lager plot
 x = temperature_df['date']
