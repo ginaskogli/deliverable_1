@@ -101,8 +101,8 @@ x = temperature_df['date']
 y = temperature_df['temperature']
 
 plt.plot(x, y)
-plt.xlabel = 'Date'
-plt.ylabel = 'Temperature (°C)'
+plt.xlabel('Date')
+plt.ylabel('Temperature (°C)')
+plt.title('Daily mean temperature')
+plt.legend()
 plt.show()
-
-
