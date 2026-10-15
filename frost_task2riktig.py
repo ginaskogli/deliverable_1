@@ -2,20 +2,29 @@
 import requests
 import pandas as pd
 import matplotlib.pyplot as plt
-import json
 
 
+def get_frost_data(desired_element: str) -> pd.DataFrame:
 
-def get_frost_data(desired_element):
+    """Creates dataframe containing observations (value, moh, unit MM.), referenceTime and sourceId, 
+    from website frost.no, at site SN17850 (Ås).
+
+    Arguments:
+        desired_element: weather element from element list at frost.no
+
+    Returns:
+        dataframe: observations for each day in timeseries.
+
+    """ 
 
     with open('met_id.txt') as f:
-        client_id = f'{f.readline().strip().split(':')[1]}'
+        client_id = f.readline().strip().split(':')[1]
 
     # Define endpoint and parameters
         endpoint = 'https://frost.met.no/observations/v0.jsonld'
         parameters = {
             'sources': 'SN17850',
-            'elements': f'{desired_element}',
+            'elements': desired_element,
             'referencetime': '2025-01-01/2026-01-01',
             'timeoffsets': 'default',
             'levels': 'default',
@@ -23,7 +32,7 @@ def get_frost_data(desired_element):
         # set end date to 26-01-01 because they use open intervals, dont include last date
     
         # Issue an HTTP GET request, r is in JSON format
-        r = requests.get(endpoint, parameters, auth=(client_id,''))
+        r = requests.get(endpoint, parameters, auth=(client_id, ''))
         # Extract JSON data, make this a Python dictionary
         data = r.json()
         #print(json.dumps(data, indent=4))
@@ -46,9 +55,18 @@ def get_frost_data(desired_element):
     return dataframe 
 
 
+def get_temperature_data(df: pd.DataFrame) -> pd.DataFrame:
 
+    """Creates dataframes containing only date and temperature, from a dataframe of meteorological data.
 
-def get_temperature_data(df):
+    Arguments:
+        df: a dataframe with columns 'observations', 'referenceTime' and 'sourceId' 
+
+    Returns:
+        df: a dataframe containing date and temperature
+
+    """
+
     # Lager en ny dataframe for dato og temperatur
     temperature_df = df[['referenceTime', 'value']].copy()
 
@@ -64,9 +82,17 @@ def get_temperature_data(df):
     return temperature_df
 
 
+def get_precipitation_data(df: pd.DataFrame) -> pd.DataFrame:
 
+    """Creates dataframes containing only date and precipitation, from a dataframe of meteorological data.
 
-def get_precipitation_data(df):
+    Arguments:
+        df: a dataframe with columns 'observations', 'referenceTime' and 'sourceId'. 
+
+    Returns:
+        df: a dataframe containing date and precipitation.
+
+    """
     # make dafaframe for date and precipitation
     precipitation_df = df[['referenceTime', 'value']].copy()
 
@@ -81,13 +107,9 @@ def get_precipitation_data(df):
     return precipitation_df
 
 
-
 # gather dataframes for temperature and precepitation in simpler names
 temp = get_temperature_data(get_frost_data('mean(air_temperature P1D)'))
 prec = get_precipitation_data(get_frost_data('sum(precipitation_amount P1D)'))
-
-
-
 
 # MAKE PLOT WITH TEMPERATURE FROM TASK 1 + PRECIPITATION
 # create figure and first axis
@@ -104,5 +126,3 @@ ax2.set_xlabel('Date')
 ax2.set_ylabel('Precipitation mm', color = 'orange')
 plt.title('Temperature and precipitation 2025')
 plt.show()
-
-
