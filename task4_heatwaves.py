@@ -1,6 +1,6 @@
 import pandas as pd
 import requests
-import yaml 
+import yaml
 
 
 def get_max_temperature(
@@ -33,11 +33,12 @@ def get_max_temperature(
     # Issue an HTTP GET request
     response = requests.get(
         endpoint,
-        params=parameters, 
-        auth=(client_id,''),
+        params=parameters,
+        auth=(client_id, ''),
         timeout=30,
         )
-    # timeout=30 - det er en begrensning av forespørselstid til systemet, går det mer enn 30 sek slutter den forespørselen
+    # timeout=30 - det er en begrensning av forespørselstid til systemet,
+    # går det mer enn 30 sek slutter den forespørselen
 
     # Extract JSON data
     response_data = response.json()
@@ -97,7 +98,7 @@ def find_heatwaves(df: pd.DataFrame) -> list[tuple[str, str]]:
     # Variables for the colected data
     heatwaves = []  # List that will collect start/end dates for heatwaves
     start_date = None   # We dont know when a heatwave wil start, so therefore None, will contain timestamps later,
-        # None er en pythonverdi som betyr at vi ikke har en verdi her enda, enda ikke registrert en varm periode i starten
+    # None er en pythonverdi som betyr at vi ikke har en verdi her enda, enda ikke registrert en varm periode i starten
     consecutive_days = 0    # Når det er registrert en varm dag øker den med en
 
     for index, is_hot in enumerate(hot_days):
