@@ -1,7 +1,6 @@
-import requests
-import pandas as pd
 import matplotlib.pyplot as plt
-
+import pandas as pd
+import requests
 
 with open('met_id.txt') as f:
     client_id = f'{f.readline().strip().split(':')[1]}'
@@ -18,7 +17,7 @@ parameters = {
 # må sette sluttdato til 26-01-01 fordi de bruker åpne intervaller og dermed ikke inkluderer siste dato
 
 # Issue an HTTP GET request
-r = requests.get(endpoint, parameters, auth=(client_id,''))
+r = requests.get(endpoint, parameters, auth=(client_id, ''))
 # Extract JSON data
 data = r.json()
 
@@ -96,7 +95,16 @@ print(summary)
 
 
 def moving_average_temperature(df: pd.DataFrame) -> pd.Series:
-    """Calculating the 7-day moving averge of daily temperatures."""
+    """Calculate the 7-day moving average of daily temperatures.
+
+    Arguments:
+        df: DataFrame containing a temperature column with daily
+            mean temperatures.
+
+    Returns:
+        Series containing the 7-day moving average. The first six
+            values are NaN because there are not enough ovservations.
+    """
     moving_average = df['temperature'].rolling(window=7).mean()
 # series - returns a pandas-series with averagevalues
 # rolling(window=7) - collects 7 days at a time as a "window"
