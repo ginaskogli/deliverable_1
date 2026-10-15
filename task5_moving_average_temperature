@@ -69,6 +69,7 @@ print(temperature_df.shape)
 print(temperature_df['date'].min())
 print(temperature_df['date'].max())
 
+
 def temperature_summary(df: pd.DataFrame) -> pd.DataFrame:
     """Calculate summary statistics for the temperature data.
 
@@ -88,6 +89,7 @@ def temperature_summary(df: pd.DataFrame) -> pd.DataFrame:
 
     return summary
 
+
 summary = temperature_summary(temperature_df)
 
 print(summary)
@@ -102,14 +104,23 @@ def moving_average_temperature(df: pd.DataFrame) -> pd.Series:
     return moving_average
 
 
+moving_average = moving_average_temperature(temperature_df)
 
+print(moving_average.head(10))
 
 # lager plot
+# average temperature - points
 x = temperature_df['date']
 y = temperature_df['temperature']
 
-plt.plot(x, y)
+plt.plot(x, y, '.', label='Daily temperature')
+
+# Plott for moving average as a line
+plt.plot(x, moving_average, label='7-day moving average')
+
+
 plt.xlabel('Date')
 plt.ylabel('Temperature (°C)')
+plt.title('Daily mean temperature and 7-day moving average')
+plt.legend()
 plt.show()
-
