@@ -1,7 +1,4 @@
 
-# lager en fil utenom for jeg tør ikke å begyne på en ny branch når jeg enda ikke er sikker 
-# på om branchen oppgave2 er der den skal være, og at jeg ikke er i main?
-
 # copy the whole function from task 2 instead of changing it to have a variable for referencetime,
 # to avoid having to cange every other code that uses that function
 
@@ -13,13 +10,18 @@ import json
 
 
 
-def get_frost_data(desired_element, timeseries):
+def get_frost_data(desired_element: str, timeseries: str) -> pd.DataFrame:
 
-#"""
+    """Creates dataframe containing observations (value, moh, unit MM.), referenceTime and sourceId.
 
-#        timeseries: formate '{start}/{end}' as 'yyyy-mm-dd/yyyy-mm-dd'
+    Arguments:
+        desired_element: weather element from element list at frost.no
+        timeseries: formate '{start}/{end}' as 'yyyy-mm-dd/yyyy-mm-dd'
 
-#"""    
+    Returns:
+        dataframe: observations for each day in timeseries
+
+    """    
     with open('met_id.txt') as f:
         client_id = f'{f.readline().strip().split(':')[1]}'
 
@@ -57,13 +59,20 @@ def get_frost_data(desired_element, timeseries):
 
     return dataframe 
 
-print(get_frost_data('mean(air_temperature P1D)', '2025-01-01/2026-01-01'))
 
 
-# function for making dataframes containing only date and temperature
+def temps_for_interval(df: pd.DataFrame) -> pd.DataFrame:
 
-def temps_for_interval(df):
-    # Lager en ny dataframe for dato og temperatur
+    """Creates dataframes containing only date and temperature, from a dataframe of meteorological data.
+
+    Arguments:
+        df: a dataframe with columns 'observations', 'referenceTime' and 'sourceId' 
+
+    Returns:
+
+
+    """
+
     temperature_df = df[['referenceTime', 'value']].copy()
 
     temperature_df = temperature_df.rename(

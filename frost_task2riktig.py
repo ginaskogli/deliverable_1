@@ -95,14 +95,14 @@ fig1, ax1 = plt.subplots()
 
 ax1.plot(temp['date'], temp['temperature'], color='tab:blue')
 ax1.set_xlabel('Date')
-ax1.set_ylabel('Temperature C')
+ax1.set_ylabel('Temperature C', color = 'blue')
 
 ax2 = ax1.twinx()
 
 ax2.plot(temp['date'], prec['precipitation'], color='tab:orange')
 ax2.set_xlabel('Date')
-ax2.set_ylabel('Precipitation mm')
-
+ax2.set_ylabel('Precipitation mm', color = 'orange')
+plt.title('Temperature and precipitation 2025')
 plt.show()
 
 
