@@ -26,9 +26,9 @@ if r.status_code == 200:
     data = data['data']
     print('Data retrieved from frost.met.no!')
 else:
-    print('Error! Returned status code %s' % r.status_code)
-    print('Message: %s' % data['error']['message'])
-    print('Reason: %s' % data['error']['reason'])
+    print(f'Error! Returned status code {r.status_code}')
+    print(f'Message: {data['error']['message']}')
+    print(f'Reason: {data['error']['reason']}')
 
 # This will return a Dataframe with all of the observations in a table format
 # Convert the observations to a DataFrame
